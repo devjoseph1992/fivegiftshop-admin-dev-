@@ -18,17 +18,18 @@ import {
 import { createBrand } from '@/lib/db';
 import { useAuth } from '@/utils/auth';
 
-const AddProductModal = () => {
+const AddBrandModal = () => {
  const toast = useToast();
  const auth = useAuth();
  const { isOpen, onOpen, onClose } = useDisclosure();
  const { handleSubmit, register } = useForm();
 
- const onCreateBrand = ({ brand }) => {
+ const onCreateBrand = ({ name }) => {
   const newBrand = {
    sellerId: auth.user.uid,
+   sellerName: auth.user.email,
    createdAt: new Date().toISOString(),
-   brand,
+   name,
   };
   createBrand(newBrand);
   toast({
@@ -38,16 +39,16 @@ const AddProductModal = () => {
    duration: 5000,
    isClosable: true,
   });
-  //   mutate(
-  //    '/api/brands',
-  //    async (data) => {
-  //     return { brands: [...data.brands, newBrand] };
-  //    },
-  //    false
-  //   );
+  mutate(
+   '/api/brands',
+   async (data) => {
+    return { brands: [...data.brands, newBrand] };
+   },
+   false
+  );
   onClose();
  };
- console.log(onCreateBrand);
+
  return (
   <>
    <Button fontWeight='medium' maxW='200px' onClick={onOpen}>
@@ -56,7 +57,7 @@ const AddProductModal = () => {
    <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent as='form' onSubmit={handleSubmit(onCreateBrand)}>
-     <ModalHeader fontWeight='bold'>Add Product</ModalHeader>
+     <ModalHeader fontWeight='bold'>Add Brand</ModalHeader>
      <ModalCloseButton />
      <ModalBody pb={6}>
       <FormControl>
@@ -69,12 +70,12 @@ const AddProductModal = () => {
         })}
        />
       </FormControl>
-
-      {/* <FormControl mt={4}>
-       <FormLabel>Category</FormLabel>
+      {/* 
+      <FormControl mt={4}>
+       <FormLabel>Seller Name</FormLabel>
        <Input
-        placeholder='Category'
-        name='category'
+        placeholder='Seller Name'
+        name='seller'
         ref={register({
          required: 'Required',
         })}
@@ -116,4 +117,4 @@ const AddProductModal = () => {
  );
 };
 
-export default AddProductModal;
+export default AddBrandModal;
